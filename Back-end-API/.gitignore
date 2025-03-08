@@ -1,6 +1,0 @@
-node_modules
-postgres-data
-migrations
-uploads
-.env
-
