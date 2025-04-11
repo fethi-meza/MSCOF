@@ -1,0 +1,189 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+model Student {
+  id                Int               @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  dateOfBirth       DateTime
+  email             String            @unique
+  phoneNumber       String?
+  enrollmentDate    DateTime
+  status            Status
+  enrollments       Enrollment[]
+  grades            Grade[]
+  attendance        Attendance[]
+  trainingRequests  TrainingRequest[]
+}
+
+model Instructor {
+  id                Int               @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String            @unique
+  phoneNumber       String?
+  specialization    String?
+  isSpecialist      Boolean
+  departmentId      Int?
+  department        Department?       @relation(fields: [departmentId], references: [id])
+  classes           Class[]
+  formations        Formation[]
+}
+
+model Class {
+  id                Int               @id @default(autoincrement())
+  name              String
+  description       String?
+  instructor        Instructor        @relation(fields: [instructorId], references: [id])
+  instructorId      Int
+}
+
+model Formation {
+  id                Int               @id @default(autoincrement())
+  name              String
+  description       String?
+  availableSpots    Int
+  durationInHours   Int
+  startDate         DateTime
+  endDate           DateTime
+  instructor        Instructor?       @relation(fields: [instructorId], references: [id])
+  instructorId      Int?
+  trainingRequests  TrainingRequest[]
+  schedules         Schedule[]
+  enrollments       Enrollment[]
+  calendar          Calendar?
+}
+
+model TrainingRequest {
+  id                Int               @id @default(autoincrement())
+  requestDate       DateTime
+  status            RequestStatus
+  student           Student           @relation(fields: [studentId], references: [id])
+  studentId         Int
+  formation         Formation         @relation(fields: [formationId], references: [id])
+  formationId       Int               @unique
+}
+
+model Schedule {
+  id                Int               @id @default(autoincrement())
+  dayOfWeek         DayOfWeek
+  startTime         String
+  endTime           String
+  location          String
+  formation         Formation         @relation(fields: [formationId], references: [id])
+  formationId       Int               @unique
+}
+
+model Calendar {
+  id                Int               @id @default(autoincrement())
+  formation         Formation         @relation(fields: [formationId], references: [id])
+  formationId       Int               @unique
+  events            Event[]
+}
+
+model Event {
+  id                Int               @id @default(autoincrement())
+  title             String
+  date              DateTime
+  startTime         String
+  endTime           String
+  calendar          Calendar          @relation(fields: [calendarId], references: [id])
+  calendarId        Int
+}
+
+model Department {
+  id                Int               @id @default(autoincrement())
+  name              String
+  description       String?
+  courses           Course[]
+  instructors       Instructor[]
+  admins            Admin[]
+}
+
+model Course {
+  id                Int               @id @default(autoincrement())
+  name              String
+  description       String?
+  department        Department        @relation(fields: [departmentId], references: [id])
+  departmentId      Int
+  grades            Grade[]
+}
+
+model Admin {
+  id                Int               @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String            @unique
+  phoneNumber       String?
+  departmentId      Int?
+  department        Department?       @relation(fields: [departmentId], references: [id])
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model Enrollment {
+  id                Int               @id @default(autoincrement())
+  student           Student           @relation(fields: [studentId], references: [id])
+  studentId         Int
+  formation         Formation         @relation(fields: [formationId], references: [id])
+  formationId       Int
+  enrollmentDate    DateTime
+  status            EnrollmentStatus
+}
+
+enum Status {
+  ACTIVE
+  GRADUATED
+  DROPPED
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+model Grade {
+  id                Int               @id @default(autoincrement())
+  value             Float
+  date              DateTime
+  student           Student           @relation(fields: [studentId], references: [id])
+  studentId         Int
+  course            Course            @relation(fields: [courseId], references: [id])
+  courseId          Int
+}
+
+model Attendance {
+  id                Int               @id @default(autoincrement())
+  date              DateTime
+  status            AttendanceStatus
+  student           Student           @relation(fields: [studentId], references: [id])
+  studentId         Int
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  EXCUSED
+}
