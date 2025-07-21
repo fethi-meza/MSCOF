@@ -1,0 +1,7 @@
+docker compose up
+npx prisma migrate dev --name init
+npx prisma studio
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4002/api';
+const response = await api.post('http://localhost:4002/api/auth/login', credentials);
+const response = await api.post('http://localhost:4002/api/auth/seed-test-accounts' );
+	

@@ -1,0 +1,551 @@
+
+# API Testing Guide for Campus Management System
+
+This document provides testing instructions for all API endpoints in the system. Use a tool like Postman, cURL, or any API testing tool to make these requests.
+
+## Base URL
+All API routes should be prefixed with your base URL, e.g. `http://localhost:4001/api`
+
+## Authentication
+
+### 1. Create Test Accounts
+```
+POST /api/auth/seed-test-accounts
+```
+Expected Response:
+```json
+{
+  "status": "success",
+  "message": "Test accounts created successfully",
+  "data": {
+    "student": {
+      "email": "student@test.com",
+      "password": "password123"
+    },
+    "admin": {
+      "email": "admin@test.com",
+      "password": "password123"
+    }
+  }
+}
+```
+
+### 2. Login
+```
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "password123"
+}
+```
+Expected Response:
+```json
+{
+  "status": "success",
+  "token": "jwt_token_here",
+  "data": {
+    "id": 1,
+    "firstName": "Test",
+    "lastName": "Admin",
+    "email": "admin@test.com",
+    "role": "admin"
+  }
+}
+```
+
+### 3. Register Student
+```
+POST /api/auth/register/student
+Content-Type: application/json
+
+{
+  "firstName": "New",
+  "lastName": "Student",
+  "email": "newstudent@example.com",
+  "password": "password123",
+  "dateOfBirth": "2000-01-01"
+}
+```
+
+### 4. Register Instructor
+```
+POST /api/auth/register/instructor
+Content-Type: application/json
+
+{
+  "firstName": "New",
+  "lastName": "Instructor",
+  "email": "newinstructor@example.com",
+  "password": "password123",
+  "specialization": "Mathematics",
+  "isSpecialist": true
+}
+```
+
+## Department Management
+
+### 1. Get All Departments
+```
+GET /api/departments
+```
+
+### 2. Create Department
+```
+POST /api/departments
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "name": "Computer Science",
+  "description": "Department focused on computer programming and technology"
+}
+```
+
+### 3. Get Department by ID
+```
+GET /api/departments/1
+```
+
+### 4. Update Department
+```
+PATCH /api/departments/1
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "description": "Updated department description"
+}
+```
+
+### 5. Delete Department
+```
+DELETE /api/departments/1
+Authorization: Bearer <admin_token>
+```
+
+## Course Management
+
+### 1. Get All Courses
+```
+GET /api/courses
+```
+
+### 2. Create Course
+```
+POST /api/courses
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "name": "Introduction to Programming",
+  "description": "Basic programming concepts and practices",
+  "departmentId": 1
+}
+```
+
+### 3. Get Course by ID
+```
+GET /api/courses/1
+```
+
+### 4. Update Course
+```
+PATCH /api/courses/1
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "description": "Updated course description"
+}
+```
+
+### 5. Delete Course
+```
+DELETE /api/courses/1
+Authorization: Bearer <admin_token>
+```
+
+## Instructor Management
+
+### 1. Get All Instructors
+```
+GET /api/instructors
+```
+
+### 2. Get Instructor by ID
+```
+GET /api/instructors/1
+```
+
+### 3. Update Instructor
+```
+PATCH /api/instructors/1
+Authorization: Bearer <admin_token_or_instructor_token>
+Content-Type: application/json
+
+{
+  "specialization": "Advanced Mathematics",
+  "phoneNumber": "+1234567890",
+  "departmentId": 1
+}
+```
+
+### 4. Delete Instructor
+```
+DELETE /api/instructors/1
+Authorization: Bearer <admin_token>
+```
+
+## Student Management
+
+### 1. Get All Students
+```
+GET /api/students
+Authorization: Bearer <admin_token>
+```
+
+### 2. Get Student by ID
+```
+GET /api/students/1
+Authorization: Bearer <admin_token_or_student_token>
+```
+
+### 3. Update Student
+```
+PUT /api/students/1
+Authorization: Bearer <admin_token_or_student_token>
+Content-Type: application/json
+
+{
+  "phoneNumber": "+1234567890",
+  "status": "ACTIVE"
+}
+```
+
+### 4. Delete Student
+```
+DELETE /api/students/1
+Authorization: Bearer <admin_token>
+```
+
+### 5. Get Student Formations
+```
+GET /api/students/1/formations
+Authorization: Bearer <admin_token_or_student_token>
+```
+
+### 6. Get Student Grades
+```
+GET /api/students/1/grades
+Authorization: Bearer <admin_token_or_student_token>
+```
+
+### 7. Get Student Attendance
+```
+GET /api/students/1/attendance
+Authorization: Bearer <admin_token_or_student_token>
+```
+
+## Formation Management
+
+### 1. Get All Formations
+```
+GET /api/formations
+```
+
+### 2. Create Formation
+```
+POST /api/formations
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "name": "Web Development Bootcamp",
+  "description": "Intensive web development training",
+  "availableSpots": 20,
+  "durationInHours": 120,
+  "startDate": "2023-06-01",
+  "endDate": "2023-08-30"
+}
+```
+
+### 3. Get Formation by ID
+```
+GET /api/formations/1
+```
+
+### 4. Update Formation
+```
+PUT /api/formations/1
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "description": "Updated formation description",
+  "availableSpots": 25
+}
+```
+
+### 5. Delete Formation
+```
+DELETE /api/formations/1
+Authorization: Bearer <admin_token>
+```
+
+### 6. Get Formation Schedules
+```
+GET /api/formations/1/schedules
+```
+
+### 7. Get Formation Enrollments
+```
+GET /api/formations/1/enrollments
+Authorization: Bearer <admin_token_or_instructor_token>
+```
+
+### 8. Enroll Student in Formation
+```
+POST /api/formations/1/enroll
+Authorization: Bearer <student_token>
+```
+
+## Schedule Management
+
+### 1. Get All Schedules
+```
+GET /api/schedules
+```
+
+### 2. Create Schedule
+```
+POST /api/schedules
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "dayOfWeek": "MONDAY",
+  "startTime": "09:00",
+  "endTime": "12:00",
+  "location": "Room 101",
+  "formationId": 1
+}
+```
+
+### 3. Get Schedule by ID
+```
+GET /api/schedules/1
+```
+
+### 4. Update Schedule
+```
+PUT /api/schedules/1
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "location": "Room 202",
+  "startTime": "10:00"
+}
+```
+
+### 5. Delete Schedule
+```
+DELETE /api/schedules/1
+Authorization: Bearer <admin_token>
+```
+
+## Grade Management
+
+### 1. Get All Grades
+```
+GET /api/grades
+Authorization: Bearer <admin_token_or_instructor_token>
+```
+
+### 2. Create Grade
+```
+POST /api/grades
+Authorization: Bearer <admin_token_or_instructor_token>
+Content-Type: application/json
+
+{
+  "value": 85.5,
+  "studentId": 1,
+  "courseId": 1
+}
+```
+
+### 3. Get Grade by ID
+```
+GET /api/grades/1
+Authorization: Bearer <admin_token_or_instructor_token_or_student_token>
+```
+
+### 4. Update Grade
+```
+PUT /api/grades/1
+Authorization: Bearer <admin_token_or_instructor_token>
+Content-Type: application/json
+
+{
+  "value": 90
+}
+```
+
+### 5. Delete Grade
+```
+DELETE /api/grades/1
+Authorization: Bearer <admin_token_or_instructor_token>
+```
+
+## Attendance Management
+
+### 1. Get Student Attendance
+```
+GET /api/attendance/student/1
+Authorization: Bearer <admin_token_or_instructor_token_or_student_token>
+```
+
+### 2. Create Attendance Record
+```
+POST /api/attendance
+Authorization: Bearer <admin_token_or_instructor_token>
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "date": "2023-05-15",
+  "status": "PRESENT"
+}
+```
+
+### 3. Update Attendance Record
+```
+PATCH /api/attendance/1
+Authorization: Bearer <admin_token_or_instructor_token>
+Content-Type: application/json
+
+{
+  "status": "EXCUSED"
+}
+```
+
+### 4. Delete Attendance Record
+```
+DELETE /api/attendance/1
+Authorization: Bearer <admin_token>
+```
+
+### 5. Batch Create Attendance Records
+```
+POST /api/attendance/batch
+Authorization: Bearer <admin_token_or_instructor_token>
+Content-Type: application/json
+
+{
+  "records": [
+    {
+      "studentId": 1,
+      "date": "2023-05-15",
+      "status": "PRESENT"
+    },
+    {
+      "studentId": 2,
+      "date": "2023-05-15",
+      "status": "ABSENT"
+    }
+  ]
+}
+```
+
+### 6. Get Student Attendance Statistics
+```
+GET /api/attendance/stats/student/1
+Authorization: Bearer <admin_token_or_instructor_token_or_student_token>
+```
+
+## Enrollment Management
+
+### 1. Get All Enrollments
+```
+GET /api/enrollments
+Authorization: Bearer <admin_token>
+```
+
+### 2. Get Student Enrollments
+```
+GET /api/enrollments/student/1
+Authorization: Bearer <admin_token_or_student_token>
+```
+
+### 3. Get Formation Enrollments
+```
+GET /api/enrollments/formation/1
+Authorization: Bearer <admin_token_or_instructor_token>
+```
+
+### 4. Create Enrollment
+```
+POST /api/enrollments
+Authorization: Bearer <admin_token_or_student_token>
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "formationId": 1
+}
+```
+
+### 5. Update Enrollment
+```
+PATCH /api/enrollments/1
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "status": "COMPLETED"
+}
+```
+
+### 6. Delete Enrollment
+```
+DELETE /api/enrollments/1
+Authorization: Bearer <admin_token>
+```
+
+## Admin Dashboard
+
+### 1. Get Dashboard Stats
+```
+GET /api/admin/stats/dashboard
+Authorization: Bearer <admin_token>
+```
+
+## Testing Workflow
+
+1. Create test accounts or register new users
+2. Login to get authentication tokens
+3. Test public endpoints that don't require authentication
+4. Test protected endpoints with appropriate tokens
+5. Test role-based access by trying to access endpoints with different user roles
+
+## Common HTTP Status Codes
+
+- 200: Success
+- 201: Created
+- 204: No Content (successful deletion)
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 500: Internal Server Error
+
+## Tips for Testing
+
+1. Save authentication tokens for reuse across requests
+2. Create test data that you can reference in subsequent requests
+3. Test both valid and invalid inputs to ensure error handling works correctly
+4. For delete operations, verify deletion by trying to fetch the deleted resource
+5. When testing updates, fetch the resource before and after to verify changes

@@ -1,4 +1,5 @@
-FROM node:18.17.1
+
+FROM node:18-alpine
 
 WORKDIR /app
 
@@ -10,6 +11,6 @@ COPY . .
 
 RUN npx prisma generate
 
-EXPOSE 4001 
+EXPOSE 4001
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

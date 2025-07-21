@@ -1,0 +1,18 @@
+docker compose up
+npx prisma migrate dev --name init
+	npx prisma studio
+
+	const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4002/api'; //Api.test
+
+			  const response = await api.post('http://localhost:4002/api/auth/login', credentials);//Auth.ts
+		const response = await api.post('http://localhost:4002/api/auth/seed-test-accounts' );  //testAccountUtils.ts
+	
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+	pls when been student:  /student/formations to view and manage my own enrollments pls fixd pls  
+and for Student Enrollment Management (/student/formations)
+✅ View all their enrolled formations
+✅ See enrollment status for each formation
+✅ Unenroll from active formations (delete enrollment)
+✅ View formation details
+✅ Track enrollment progress pls too fixd pls 

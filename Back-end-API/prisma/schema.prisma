@@ -14,9 +14,11 @@ model Student {
   lastName          String
   dateOfBirth       DateTime
   email             String            @unique
+  password          String
   phoneNumber       String?
   enrollmentDate    DateTime
   status            Status
+  photo             String?
   enrollments       Enrollment[]
   grades            Grade[]
   attendance        Attendance[]
@@ -28,10 +30,12 @@ model Instructor {
   firstName         String
   lastName          String
   email             String            @unique
+  password          String
   phoneNumber       String?
   specialization    String?
   isSpecialist      Boolean
   departmentId      Int?
+  photo             String?
   department        Department?       @relation(fields: [departmentId], references: [id])
   classes           Class[]
   formations        Formation[]
@@ -49,6 +53,7 @@ model Formation {
   id                Int               @id @default(autoincrement())
   name              String
   description       String?
+  image             String?
   availableSpots    Int
   durationInHours   Int
   startDate         DateTime
@@ -59,6 +64,7 @@ model Formation {
   schedules         Schedule[]
   enrollments       Enrollment[]
   calendar          Calendar?
+  courses           Course[]
 }
 
 model TrainingRequest {
@@ -68,7 +74,7 @@ model TrainingRequest {
   student           Student           @relation(fields: [studentId], references: [id])
   studentId         Int
   formation         Formation         @relation(fields: [formationId], references: [id])
-  formationId       Int               @unique
+  formationId       Int
 }
 
 model Schedule {
@@ -78,7 +84,7 @@ model Schedule {
   endTime           String
   location          String
   formation         Formation         @relation(fields: [formationId], references: [id])
-  formationId       Int               @unique
+  formationId       Int
 }
 
 model Calendar {
@@ -113,6 +119,8 @@ model Course {
   description       String?
   department        Department        @relation(fields: [departmentId], references: [id])
   departmentId      Int
+  formation         Formation?        @relation(fields: [formationId], references: [id])
+  formationId       Int?
   grades            Grade[]
 }
 
@@ -121,6 +129,7 @@ model Admin {
   firstName         String
   lastName          String
   email             String            @unique
+  password          String
   phoneNumber       String?
   departmentId      Int?
   department        Department?       @relation(fields: [departmentId], references: [id])
